@@ -15,7 +15,7 @@ const bot = new TelegramBot(TOKEN, {
 });
 
 bot.openWebHook();
-bot.setWebHook(config.get('url') + '/bot' + TOKEN);
+bot.setWebHook(URL + '/bot' + TOKEN);
 
 
 bot.on('inline_query', query => {
