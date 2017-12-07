@@ -1,6 +1,6 @@
 {
   "name": "lopatabot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,5 +11,8 @@
   "dependencies": {
     "config": "^1.28.1",
     "node-telegram-bot-api": "^0.29.0"
+  },
+  "engines": {
+    "node": "8.9.2"
   }
 }

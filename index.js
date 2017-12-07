@@ -5,10 +5,11 @@ const getMessage = require('./lib/wrap.js');
 process.env.NTBA_FIX_319 = true;
 
 const TOKEN = config.get('token');
+const URL = process.env.APP_URL || config.get('url');
 
 const bot = new TelegramBot(TOKEN, {
     webHook: {
-        port: config.get('port'),
+        port: process.env.PORT || config.get('port'),
         autoOpen: false
     }
 });
