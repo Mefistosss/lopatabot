@@ -1,11 +1,12 @@
 const config = require('config');
 const TelegramBot = require('node-telegram-bot-api');
 const getMessage = require('./lib/wrap.js');
+const anekdot = require('./anekdots/index.js');
 
 process.env.NTBA_FIX_319 = true;
 
-const TOKEN = config.get('token');
-
+// const TOKEN = config.get('token');
+const TOKEN = '481641481:AAFB7DtmM0obPQIf7V7kfDfWz1lODs-U4Cw';
 const URL = process.env.APP_URL || config.get('url');
 
 const bot = new TelegramBot(TOKEN, {
@@ -72,4 +73,10 @@ bot.onText(/\/start/, msg => {
 
 bot.onText(/\/help/, msg => {
     bot.sendMessage(msg.chat.id, config.get('phrases.welcome'));
+});
+
+bot.onText(/\/anekdot/, msg => {
+    anekdot((data) => {
+        bot.sendMessage(msg.chat.id, data);
+    });
 });
