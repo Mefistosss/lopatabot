@@ -1,5 +1,5 @@
 const domObj = require('../../lib/getHtml.js');
-const getDomObject = require('../../lib/getDomObject.js');
+const getDomObjects = require('../../lib/getDomObjects.js');
 const articles = require('./articles.js');
 
 const ARTICLE_CLASS = 'widget-article_joke';
@@ -7,11 +7,12 @@ const ARTICLE_CLASS = 'widget-article_joke';
 module.exports = function(url, callback) {
     domObj(url, (err, dom) => {
         if (err) {
+            console.log('domObj err');
             callback(err);
         } else {
-            let rawArticles = getDomObject(dom, ARTICLE_CLASS);
-            let articles = articles(rawArticles);
-            callback(null, articles);
+            let rawArticles = getDomObjects(dom, ARTICLE_CLASS);
+            let _articles = articles(rawArticles);
+            callback(null, _articles);
         }
     });
 };

@@ -6,7 +6,7 @@ module.exports = function(callback) {
 
     anekdot(sites[0].url, (err, data) => {
         if (err) {
-            callback('Ой!');
+            callback('Ой, что то пошло не так!');
         } else {
             callback(data[0]);
         }

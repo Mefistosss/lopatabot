@@ -1,3 +1,4 @@
+const getDomObjects = require('../../lib/getDomObjects.js');;
 const ARTICLE_BODY = 'article_body';
 
 module.exports = function (nodes) {
@@ -5,7 +6,7 @@ module.exports = function (nodes) {
 
     nodes.forEach((node) => {
         let anekdot = '';
-        let p = getDivs(node, ARTICLE_BODY)[0].childNodes[0].childNodes[0];
+        let p = getDomObjects(node, ARTICLE_BODY)[0].childNodes[0].childNodes[0];
         p.childNodes.forEach((child) => {
             if (child.nodeName === '#text') {
                 anekdot += child.value;
