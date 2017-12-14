@@ -76,7 +76,14 @@ bot.onText(/\/help/, msg => {
 });
 
 bot.onText(/\/anekdot/, msg => {
-    anekdot((data) => {
+    anekdot(true, (data) => {
         bot.sendMessage(msg.chat.id, data);
+    });
+});
+
+const makeChatMessage = require('./lib/makeChatMessage.js');
+bot.onText(/\/chat/, msg => {
+    anekdot(false, (data) => {
+        bot.sendMessage(msg.chat.id, makeChatMessage(data, 'morning'));
     });
 });

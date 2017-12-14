@@ -1,14 +1,27 @@
 const config = require('config');
-const sites = config.get('anekdotSites');
+const random = require('../lib/random.js');
 
-module.exports = function(callback) {
+const sites = config.get('anekdotSites');
+let lastAnekdot = '';
+
+module.exports = function(forse, callback) {
     let anekdot = require('./' + sites[0].name + '/index.js');
 
     anekdot(sites[0].url, (err, data) => {
         if (err) {
-            callback('Ой, что то пошло не так!');
+            callback(config.get('error'));
         } else {
-            callback(data[0]);
+            let currentAnekdot = data[0];
+            if (!forse) {
+                if (currentAnekdot !== lastAnekdot) {
+                    lastAnekdot = currentAnekdot;
+                } else {
+                    let phrases = config.get('insteadAnekdot');
+                    currentAnekdot = phrases[random(phrases.length - 1)];
+                }
+            }
+            
+            callback(currentAnekdot);
         }
     });
 }

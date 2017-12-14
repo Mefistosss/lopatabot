@@ -7,7 +7,6 @@ const ARTICLE_CLASS = 'widget-article_joke';
 module.exports = function(url, callback) {
     domObj(url, (err, dom) => {
         if (err) {
-            console.log('domObj err');
             callback(err);
         } else {
             let rawArticles = getDomObjects(dom, ARTICLE_CLASS);

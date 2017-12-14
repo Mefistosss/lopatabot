@@ -1,4 +1,4 @@
-const getDomObjects = require('../../lib/getDomObjects.js');;
+const getDomObjects = require('../../lib/getDomObjects.js');
 const ARTICLE_BODY = 'article_body';
 
 module.exports = function (nodes) {
