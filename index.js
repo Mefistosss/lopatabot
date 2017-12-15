@@ -8,8 +8,7 @@ const makeChatMessage = require('./lib/makeChatMessage.js');
 
 process.env.NTBA_FIX_319 = true;
 
-// const TOKEN = config.get('token');
-const TOKEN = '481641481:AAFB7DtmM0obPQIf7V7kfDfWz1lODs-U4Cw';
+const TOKEN = config.get('token');
 const URL = process.env.APP_URL || config.get('url');
 
 const bot = new TelegramBot(TOKEN, {
@@ -18,8 +17,6 @@ const bot = new TelegramBot(TOKEN, {
         autoOpen: false
     }
 });
-
-console.log(process.env.APP_URL, process.env.PORT);
 
 bot.openWebHook();
 bot.setWebHook(URL + '/bot' + TOKEN);
