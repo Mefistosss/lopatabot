@@ -1,6 +1,10 @@
 const config = require('config');
 const TelegramBot = require('node-telegram-bot-api');
 const getMessage = require('./lib/wrap.js');
+const anekdot = require('./anekdots');
+const Groups = require('./groups');
+const version = require('./package.json').version;
+const makeChatMessage = require('./lib/makeChatMessage.js');
 
 process.env.NTBA_FIX_319 = true;
 
@@ -22,13 +26,25 @@ bot.on('inline_query', query => {
     let results = [];
 
     if (query.query.trim() !== '') {
-        let m = getMessage(query.query);
+        let l = "лопата";
+        let s = "сарказм";
+        let m = getMessage(query.query, l);
 
         results = [
             {
+                id: query.id + '-3',
+                type: 'article',
+                title: '</' + s + '>',
+                description: 'Просто обернуть',
+                input_message_content: {
+                    message_text: getMessage(query.query, s),
+                    parse_mode:  'Markdown'
+                }
+            },
+            {
                 id: query.id + '-2',
                 type: 'article',
-                title: '#хохма <лопата>...</лопата>',
+                title: '#хохма </' + l + '>',
                 description: 'Обернуть и добавить хештег #хохма',
                 input_message_content: {
                     message_text: "#хохма \n" + m,
@@ -38,7 +54,7 @@ bot.on('inline_query', query => {
             {
                 id: query.id + '-1',
                 type: 'article',
-                title: '<лопата>...</лопата>',
+                title: '</' + l  + '>',
                 description: 'Просто обернуть',
                 input_message_content: {
                     message_text: m,
@@ -51,12 +67,44 @@ bot.on('inline_query', query => {
     bot.answerInlineQuery(query.id, results, { cash_time: 0 });
 });
 
-let welcome = "О преветствую тебя юный подаван тонкого юмора.\nОбращайся ко мне, я помогу сказать всем, что нужно смеяться.\nЯ умею оборачивать твое сообщение в тег <лопата>";
-
-bot.onText(/\/start (.+)/, msg => {
-    bot.sendMessage(msg.chat.id, welcome);
+bot.onText(/\/start\b/, msg => {
+    bot.sendMessage(msg.chat.id, config.get('phrases.welcome'));
 });
 
-bot.onText(/\/help/, msg => {
-    bot.sendMessage(msg.chat.id, welcome);
+bot.onText(/\/help\b/, msg => {
+    let message = config.get('phrases.welcome');
+    message += "\n\n";
+    message += config.get('phrases.help');
+    bot.sendMessage(msg.chat.id, message);
 });
+
+bot.onText(/\/anekdot/, msg => {
+    anekdot(true, (data) => {
+        bot.sendMessage(msg.chat.id, data);
+    });
+});
+
+bot.onText(/\/version/, msg => {
+    bot.sendMessage(msg.chat.id, version);
+});
+
+let groups = new Groups((ids) => {
+    if (ids.length) {
+        anekdot(false, (data) => {
+            let message = makeChatMessage(data, 'morning');
+            ids.forEach((id) => {
+                bot.sendMessage(id, message);
+            });
+        });
+    }
+});
+
+bot.onText(/\/startnotices/, msg => {
+    groups.add(msg.chat.id);
+});
+
+bot.onText(/\/stopnotices/, msg => {
+    groups.remove(msg.chat.id);
+});
+
+groups.startJob();
