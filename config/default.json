@@ -3,7 +3,7 @@
     "url": "https://mighty-bayou-13500.herokuapp.com",
     "port": 443,
 
-    "jobTime": "00 01 08 * * *",
+    "jobTime": "1 8 * * *",
 
     "error": "Ой, что то пошло не так!",
 
