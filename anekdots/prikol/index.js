@@ -11,7 +11,7 @@ module.exports = function(url, callback) {
         } else {
             let rawArticles = getDomObjects(dom, ARTICLE_CLASS);
             let _articles = articles(rawArticles);
-            callback(null, _articles);
+            callback(null, (_articles && _articles.length) ? _articles[0] : null);
         }
     });
 };

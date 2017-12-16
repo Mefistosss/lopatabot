@@ -1,27 +1,64 @@
 const config = require('config');
 const random = require('../lib/random.js');
-
+const error = config.get('error');
+const phrases = config.get('insteadAnekdot');
 const sites = config.get('anekdotSites');
-let lastAnekdot = '';
 
-module.exports = function(forse, callback) {
-    let anekdot = require('./' + sites[0].name + '/index.js');
+let lastAnekdots = [];
 
-    anekdot(sites[0].url, (err, data) => {
+let getArticle = (callback, index) => {
+    let anekdot, isNotLast;
+
+    isNotLast = index < sites.length - 1;
+
+    anekdot = require('./' + sites[index].name + '/index.js');
+
+    anekdot(sites[index].url, (err, data) => {
         if (err) {
-            callback(config.get('error'));
+            if (isNotLast) {
+                getArticle(callback, index + 1);
+            } else {
+                callback(err);
+            }
         } else {
-            let currentAnekdot = data[0];
-            if (!forse) {
-                if (currentAnekdot !== lastAnekdot) {
-                    lastAnekdot = currentAnekdot;
+            if (data && data.trim() !== '') {
+                if (lastAnekdots[index] === data) {
+                    if (isNotLast) {
+                        getArticle(callback, index + 1);
+                    } else {
+                        callback(null, data, true);
+                    }
                 } else {
-                    let phrases = config.get('insteadAnekdot');
-                    currentAnekdot = phrases[random(phrases.length - 1)];
+                    lastAnekdots[index] = data;
+                    callback(null, data);
+                }
+            } else {
+                if (isNotLast) {
+                    getArticle(callback, index + 1);
+                } else {
+                    callback(null, null);
                 }
             }
-            
-            callback(currentAnekdot);
         }
     });
+};
+
+module.exports = function(callback) {
+    getArticle((err, data, isSame) => {
+        let currentAnekdot;
+        if (err) {
+            currentAnekdot = error;
+        } else {
+            if (data) {
+                if (isSame) {
+                    currentAnekdot = phrases[random(phrases.length - 1)];
+                } else {
+                    currentAnekdot = data;
+                }
+            } else {
+                currentAnekdot = phrases[random(phrases.length - 1)];
+            }
+        }
+        callback(currentAnekdot);
+    }, 0);
 }
