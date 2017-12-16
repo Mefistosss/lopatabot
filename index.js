@@ -79,7 +79,7 @@ bot.onText(/\/help\b/, msg => {
 });
 
 bot.onText(/\/anekdot/, msg => {
-    anekdot(true, (data) => {
+    anekdot((data) => {
         bot.sendMessage(msg.chat.id, data);
     });
 });
@@ -90,7 +90,7 @@ bot.onText(/\/version/, msg => {
 
 let groups = new Groups((ids) => {
     if (ids.length) {
-        anekdot(false, (data) => {
+        anekdot((data) => {
             let message = makeChatMessage(data, 'morning');
             ids.forEach((id) => {
                 bot.sendMessage(id, message);
