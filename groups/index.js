@@ -1,16 +1,20 @@
 const cron = require('cron');
 const config = require('config');
+const rooms = require('../lib/rooms.js');
 
 module.exports = class Groups {
     constructor (tickCallback) {
         this.tickCallback = tickCallback;
-        this.groupsIds = [];
+
+        let self = this;
 
         try {
             this.job = new cron.CronJob({
                 cronTime: config.get('jobTime'),
                 onTick: () => {
-                    this.tickCallback(this.groupsIds);
+                    rooms.getRooms((ids) => {
+                        self.tickCallback(ids);
+                    });
                 },
                 start: false,
                 timeZone: 'Europe/Kiev'
@@ -19,17 +23,11 @@ module.exports = class Groups {
     }
 
     add (id) {
-        if (this.groupsIds.indexOf(id) === -1) {
-            this.groupsIds.push(id);
-        }
+        rooms.addRoom(id);
     }
     
     remove (id) {
-        let index = this.groupsIds.indexOf(id);
-    
-        if (index !== -1) {
-            this.groupsIds.splice(index, 1);
-        }
+        rooms.removeRoom(id);
     }
     
     startJob () {
