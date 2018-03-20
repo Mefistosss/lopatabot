@@ -1,6 +1,4 @@
 {
-    "token": "468453188:AAHoySTd4Px6CbV76jOvXOiMcFOZfsPZsbI",
-    "url": "https://mighty-bayou-13500.herokuapp.com",
     "port": 443,
 
     "jobTime": "1 8 * * *",
