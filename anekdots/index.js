@@ -1,13 +1,13 @@
-const config = require('config');
-const random = require('../lib/random.js');
-const error = config.get('error');
-const phrases = config.get('insteadAnekdot');
-const sites = config.get('anekdotSites');
+var config = require('config');
+var random = require('../lib/random.js');
+var error = config.get('error');
+var phrases = config.get('insteadAnekdot');
+var sites = config.get('anekdotSites');
 
-let lastAnekdots = [];
+var lastAnekdots = [];
 
-let getArticle = (callback, index) => {
-    let anekdot, isNotLast;
+var getArticle = (callback, index) => {
+    var anekdot, isNotLast;
 
     isNotLast = index < sites.length - 1;
 
@@ -45,7 +45,7 @@ let getArticle = (callback, index) => {
 
 module.exports = function(callback) {
     getArticle((err, data, isSame) => {
-        let currentAnekdot;
+        var currentAnekdot;
         if (err) {
             currentAnekdot = error;
         } else {

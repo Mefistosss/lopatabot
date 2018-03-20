@@ -1,6 +1,6 @@
-const cron = require('cron');
-const config = require('config');
-const rooms = require('../lib/rooms.js');
+var cron = require('cron');
+var config = require('config');
+var rooms = require('../lib/rooms.js');
 
 module.exports = class Groups {
     constructor (tickCallback) {

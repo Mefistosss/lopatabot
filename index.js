@@ -1,15 +1,15 @@
 process.env.NTBA_FIX_319 = true;
-const TelegramBot = require('node-telegram-bot-api');
-const config = require('config');
-const getMessage = require('./lib/wrap.js');
-const anekdot = require('./anekdots');
-const Groups = require('./groups');
-const version = require('./package.json').version;
-const makeChatMessage = require('./lib/makeChatMessage.js');
+var TelegramBot = require('node-telegram-bot-api');
+var config = require('config');
+var getMessage = require('./lib/wrap.js');
+var anekdot = require('./anekdots');
+var Groups = require('./groups');
+var version = require('./package.json').version;
+var makeChatMessage = require('./lib/makeChatMessage.js');
 
-const TOKEN = process.env.TOKEN;
-const URL = process.env.APP_URL;
-const bot = new TelegramBot(TOKEN, {
+var TOKEN = process.env.TOKEN;
+var URL = process.env.APP_URL;
+var bot = new TelegramBot(TOKEN, {
     webHook: {
         port: process.env.PORT || config.get('port'),
         autoOpen: false
@@ -21,12 +21,12 @@ bot.setWebHook(URL + '/bot' + TOKEN);
 
 
 bot.on('inline_query', query => {
-    let results = [];
+    var results = [];
 
     if (query.query.trim() !== '') {
-        let l = "лопата";
-        let s = "сарказм";
-        let m = getMessage(query.query, l);
+        var l = "лопата";
+        var s = "сарказм";
+        var m = getMessage(query.query, l);
 
         results = [
             {
@@ -70,7 +70,7 @@ bot.onText(/\/start\b/, msg => {
 });
 
 bot.onText(/\/help\b/, msg => {
-    let message = config.get('phrases.welcome');
+    var message = config.get('phrases.welcome');
     message += "\n\n";
     message += config.get('phrases.help');
     bot.sendMessage(msg.chat.id, message);
@@ -86,10 +86,10 @@ bot.onText(/\/version/, msg => {
     bot.sendMessage(msg.chat.id, version);
 });
 
-let groups = new Groups((ids) => {
+var groups = new Groups((ids) => {
     if (ids.length) {
         anekdot((data) => {
-            let message = makeChatMessage(data, 'morning');
+            var message = makeChatMessage(data, 'morning');
             ids.forEach((id) => {
                 bot.sendMessage(id, message);
             });

@@ -1,5 +1,5 @@
-let getRightNodes = (nodes) => {
-    let result = null;
+var getRightNodes = (nodes) => {
+    var result = null;
 
     if (nodes && nodes.length) {
         nodes = nodes[0].childNodes;
@@ -19,7 +19,7 @@ let getRightNodes = (nodes) => {
 };
 
 module.exports = function (nodes) {
-    let result = null;
+    var result = null;
 
     nodes = getRightNodes(nodes);
 
