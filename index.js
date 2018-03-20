@@ -1,16 +1,14 @@
-const config = require('config');
+process.env.NTBA_FIX_319 = true;
 const TelegramBot = require('node-telegram-bot-api');
+const config = require('config');
 const getMessage = require('./lib/wrap.js');
 const anekdot = require('./anekdots');
 const Groups = require('./groups');
 const version = require('./package.json').version;
 const makeChatMessage = require('./lib/makeChatMessage.js');
 
-process.env.NTBA_FIX_319 = true;
-
-const TOKEN = config.get('token');
-const URL = process.env.APP_URL || config.get('url');
-
+const TOKEN = process.env.TOKEN;
+const URL = process.env.APP_URL;
 const bot = new TelegramBot(TOKEN, {
     webHook: {
         port: process.env.PORT || config.get('port'),
