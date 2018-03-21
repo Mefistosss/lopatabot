@@ -6,14 +6,14 @@ var sites = config.get('anekdotSites');
 
 var lastAnekdots = [];
 
-var getArticle = (callback, index) => {
+var getArticle = function (callback, index) {
     var anekdot, isNotLast;
 
     isNotLast = index < sites.length - 1;
 
     anekdot = require('./' + sites[index].name + '/index.js');
 
-    anekdot(sites[index].url, (err, data) => {
+    anekdot(sites[index].url, function (err, data) {
         if (err) {
             if (isNotLast) {
                 getArticle(callback, index + 1);
@@ -44,7 +44,7 @@ var getArticle = (callback, index) => {
 };
 
 module.exports = function(callback) {
-    getArticle((err, data, isSame) => {
+    getArticle(function (err, data, isSame) {
         var currentAnekdot;
         if (err) {
             currentAnekdot = error;

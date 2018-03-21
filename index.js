@@ -20,7 +20,7 @@ bot.openWebHook();
 bot.setWebHook(URL + '/bot' + TOKEN);
 
 
-bot.on('inline_query', query => {
+bot.on('inline_query', function (query) {
     var results = [];
 
     if (query.query.trim() !== '') {
@@ -65,43 +65,43 @@ bot.on('inline_query', query => {
     bot.answerInlineQuery(query.id, results, { cash_time: 0 });
 });
 
-bot.onText(/\/start\b/, msg => {
+bot.onText(/\/start\b/, function (msg) {
     bot.sendMessage(msg.chat.id, config.get('phrases.welcome'));
 });
 
-bot.onText(/\/help\b/, msg => {
+bot.onText(/\/help\b/, function (msg) {
     var message = config.get('phrases.welcome');
     message += "\n\n";
     message += config.get('phrases.help');
     bot.sendMessage(msg.chat.id, message);
 });
 
-bot.onText(/\/anekdot/, msg => {
-    anekdot((data) => {
+bot.onText(/\/anekdot/, function (msg) {
+    anekdot(function (data) {
         bot.sendMessage(msg.chat.id, data);
     });
 });
 
-bot.onText(/\/version/, msg => {
+bot.onText(/\/version/, function (msg) {
     bot.sendMessage(msg.chat.id, version);
 });
 
-var groups = new Groups((ids) => {
+var groups = new Groups(function (ids) {
     if (ids.length) {
-        anekdot((data) => {
+        anekdot(function (data) {
             var message = makeChatMessage(data, 'morning');
-            ids.forEach((id) => {
+            ids.forEach(function (id) {
                 bot.sendMessage(id, message);
             });
         });
     }
 });
 
-bot.onText(/\/startnotices/, msg => {
+bot.onText(/\/startnotices/, function (msg) {
     groups.add(msg.chat.id);
 });
 
-bot.onText(/\/stopnotices/, msg => {
+bot.onText(/\/stopnotices/, function (msg) {
     groups.remove(msg.chat.id);
 });
 

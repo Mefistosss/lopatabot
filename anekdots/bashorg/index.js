@@ -5,7 +5,7 @@ var article = require('./article.js');
 var ARTICLE_CLASS = 'q';
 
 module.exports = function(url, callback) {
-    domObj(url, (err, dom) => {
+    domObj(url, function (err, dom) {
         if (err) {
             callback(err);
         } else {

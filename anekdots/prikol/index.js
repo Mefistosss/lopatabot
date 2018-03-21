@@ -4,8 +4,8 @@ var articles = require('./articles.js');
 
 var ARTICLE_CLASS = 'widget-article_joke';
 
-module.exports = function(url, callback) {
-    domObj(url, (err, dom) => {
+module.exports = function (url, callback) {
+    domObj(url, function (err, dom) {
         if (err) {
             callback(err);
         } else {

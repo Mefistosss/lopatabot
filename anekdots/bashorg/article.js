@@ -1,10 +1,10 @@
-var getRightNodes = (nodes) => {
+var getRightNodes = function (nodes) {
     var result = null;
 
     if (nodes && nodes.length) {
         nodes = nodes[0].childNodes;
         if (nodes && nodes.length) {
-            nodes = nodes.filter((child) => {
+            nodes = nodes.filter(function (child) {
                 return child.nodeName !== "#text";
             });
 
@@ -26,7 +26,7 @@ module.exports = function (nodes) {
     if (nodes.length) {
         result = '';
 
-        nodes.forEach((child) => {
+        nodes.forEach(function (child) {
             if (child.nodeName === '#text') {
                 result += child.value;
             } else if (child.nodeName === 'br') {

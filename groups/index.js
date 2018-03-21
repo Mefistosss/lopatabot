@@ -2,43 +2,44 @@ var cron = require('cron');
 var config = require('config');
 var rooms = require('../lib/rooms.js');
 
-module.exports = class Groups {
-    constructor (tickCallback) {
-        this.tickCallback = tickCallback;
+var Groups = function (tickCallback) {
+    this.tickCallback = tickCallback;
 
-        let self = this;
+    var self = this;
 
-        try {
-            this.job = new cron.CronJob({
-                cronTime: config.get('jobTime'),
-                onTick: () => {
-                    rooms.getRooms((ids) => {
-                        self.tickCallback(ids);
-                    });
-                },
-                start: false,
-                timeZone: 'Europe/Kiev'
-            });
-        } catch(ex) {}
-    }
+    try {
+        this.job = new cron.CronJob({
+            cronTime: config.get('jobTime'),
+            onTick: function () {
+                rooms.getRooms(function (ids) {
+                    self.tickCallback(ids);
+                });
+            },
+            start: false,
+            timeZone: 'Europe/Kiev'
+        });
+    } catch(ex) {}
+};
 
-    add (id) {
-        rooms.addRoom(id);
+Groups.prototype.add = function (id) {
+    rooms.addRoom(id);
+};
+
+Groups.prototype.remove = function (id) {
+    rooms.removeRoom(id);
+};
+
+Groups.prototype.startJob = function () {
+    if (!this.job.running) {
+        this.job.start();
     }
+};
     
-    remove (id) {
-        rooms.removeRoom(id);
+Groups.prototype.stopJob = function () {
+    if (this.job.running) {
+        this.job.stop();
     }
-    
-    startJob () {
-        if (!this.job.running) {
-            this.job.start();
-        }
-    }
-    
-    stopJob () {
-        if (this.job.running) {
-            this.job.stop();
-        }
-    }
-}
+};
+
+module.exports = Groups;
+
