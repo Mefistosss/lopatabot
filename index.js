@@ -9,12 +9,13 @@ var makeChatMessage = require('./lib/makeChatMessage.js');
 var db = require('./data/db.js');
 
 db(function () {
+    var PORT = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || config.get('port');
     var TOKEN = process.env.TOKEN;
-    var URL = process.env.APP_URL;
+    var URL = process.env.APP_URL || process.env.OPENSHIFT_NODEJS_IP;
 
     var bot = new TelegramBot(TOKEN, {
         webHook: {
-            port: process.env.PORT || config.get('port'),
+            port: PORT,
             autoOpen: false
         }
     });
