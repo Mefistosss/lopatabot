@@ -27,6 +27,8 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
 
             options.user = mongoUser;
             options.pass = mongoPassword;
+
+            console.log('USER PASS: true');
         }
         // Provide UI label that excludes user id and pw
         // mongoURLLabel += mongoHost + ':' + mongoPort + '/' + mongoDatabase;
@@ -35,6 +37,8 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
         name = mongoDatabase;
     }
 }
+
+console.log('MONGOURL', 'mongodb://' + mongoUrl + '/' + name);
 
 mongoose.connect('mongodb://' + mongoUrl + '/' + name, options);
 

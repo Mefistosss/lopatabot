@@ -118,4 +118,8 @@ db(function () {
     });
 
     groups.startJob();
+
+    console.log('PORT', PORT);
+    console.log('URL', URL);
+    console.log('TOKEN', TOKEN);
 });
