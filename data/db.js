@@ -34,14 +34,12 @@ function requireModels(callback) {
     }, callback);
 }
 module.exports = function(callback) {
-    setTimeout(function () {
-        async.series([
-            open,
-            requireModels
-        ], function(err) {
-            if (err) throw err;
-            // mongoose.disconnect();
-            callback();
-        });
-    }, 20000);
+    async.series([
+        open,
+        requireModels
+    ], function(err) {
+        if (err) throw err;
+        // mongoose.disconnect();
+        callback();
+    });
 };

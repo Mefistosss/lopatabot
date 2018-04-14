@@ -9,8 +9,10 @@ var mongoUrl = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL || 
 var name = process.env.MONGODB_DATABASE || process.env.MONGODB_NAME || process.env.MONGO_NAME || config.get('mongoName');
 
 var options = {
-    "keepAlive": true,
-    "lazyConnect": true
+    "keepAlive": true
+    "autoReconnect": true,
+    "reconnectTries": 50,
+    "reconnectInterval": 2000
 };
 
 // if (mongoUrl == null && process.env.DATABASE_SERVICE_NAME) {
