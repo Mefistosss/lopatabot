@@ -46,7 +46,7 @@ mongoPort = process.env.MONGODB_SERVICE_PORT || process.env.MONGODB_PORT;
 
 console.dir(process.env);
 console.dir(process.env);
-mongoURL = mongoHost + ':' +  mongoPort;
+mongoUrl = mongoHost + ':' +  mongoPort;
 
 // if (mongoUrl == null) {
 //     mongoUrl = config.get('mongoUrl');
