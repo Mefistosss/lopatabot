@@ -53,9 +53,17 @@ mongoUrl = mongoHost + ':' +  mongoPort;
 
 
 
-mongoUrl = 'mongodb://' + mongoUrl + '/' + name;
+// mongoUrl = 'mongodb://' + mongoUrl + '/' + name;
+// console.log('MONGOURL', mongoUrl);
+// mongoose.connect(mongoUrl, options);
+
+
+var user = process.env.MONGODB_USER;
+var pass = process.env.MONGODB_PASSWORD;
+
+mongoUrl = 'mongodb://' + user + ':' + pass + '@' + mongoHost + ':' + mongoPort + '/' + name;
 console.log('MONGOURL', mongoUrl);
 
-mongoose.connect(mongoUrl, options);
+mongoose.connect(mongoUrl);
 
 module.exports = mongoose;
