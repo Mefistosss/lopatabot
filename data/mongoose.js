@@ -61,8 +61,7 @@ mongoUrl = mongoHost + ':' +  mongoPort;
 var user = process.env.MONGODB_USER;
 var pass = process.env.MONGODB_PASSWORD;
 
-// mongoUrl = 'mongodb://' + user + ':' + pass + '@' + mongoHost + ':' + mongoPort + '/' + name;
-mongoUrl = user + ':' + pass + '@' + mongoHost + ':' + mongoPort + '/' + name;
+mongoUrl = 'mongodb://' + user + ':' + pass + '@' + mongoHost + ':' + mongoPort + '/' + name;
 console.log('MONGOURL', mongoUrl);
 
 mongoose.connect(mongoUrl);
