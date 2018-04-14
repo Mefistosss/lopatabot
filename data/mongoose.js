@@ -1,6 +1,6 @@
 var config = require('config');
 var mongoose = require('mongoose');
-// mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise;
 
 var user = null;
 var password = null;
@@ -64,6 +64,15 @@ var pass = process.env.MONGODB_PASSWORD;
 mongoUrl = 'mongodb://' + user + ':' + pass + '@' + mongoHost + ':' + mongoPort + '/' + name;
 console.log('MONGOURL', mongoUrl);
 
-mongoose.connect(mongoUrl);
+// mongoose.connect(mongoUrl);
+
+var MongoDB = mongoose.connect(mongoUrl).connection;
+MongoDB.on('error', function(err) {
+    console.log(err.message);
+});
+
+MongoDB.once('open', function() {
+    console.log("mongodb connection open");
+});
 
 module.exports = mongoose;
