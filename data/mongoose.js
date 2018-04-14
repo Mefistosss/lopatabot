@@ -53,9 +53,10 @@ mongoUrl = mongoHost + ':' +  mongoPort;
 
 
 mongoUrl = 'mongodb://' + mongoUrl + '/' + name;
-console.log('MONGOURL', mongoUrl);
+console.log('MONGOURL', mongoUrl, options);
 mongoose.connect(mongoUrl, options, function (err) {
     if (err) {
+        console.log('connect error');
         console.log(err);
     } else {
         console.log('mongoose is connected');
