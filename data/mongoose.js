@@ -41,19 +41,22 @@ var options = {
 options.user = process.env.MONGODB_USER;
 options.pass = process.env.MONGODB_PASSWORD;
 
-mongoHost = process.env.MONGODB_HOST || process.env.MONGODB_SERVICE_HOST;
+mongoHost = process.env.MONGODB_SERVICE_HOST || process.env.MONGODB_HOST;
 mongoPort = process.env.MONGODB_SERVICE_PORT || process.env.MONGODB_PORT;
 
+console.dir(process.env);
+console.dir(process.env);
 mongoURL = mongoHost + ':' +  mongoPort;
 
-if (mongoUrl == null) {
-    mongoUrl = config.get('mongoUrl');
-}
+// if (mongoUrl == null) {
+//     mongoUrl = config.get('mongoUrl');
+// }
 
-console.log(process.env);
-console.dir(process.env);
-console.log('MONGOURL', 'mongodb://' + mongoUrl + '/' + name);
 
-mongoose.connect('mongodb://' + mongoUrl + '/' + name, options);
+
+mongoUrl = 'mongodb://' + mongoUrl + '/' + name;
+console.log('MONGOURL', mongoUrl);
+
+mongoose.connect(mongoUrl, options);
 
 module.exports = mongoose;
