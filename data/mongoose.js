@@ -45,7 +45,6 @@ mongoHost = process.env.MONGODB_SERVICE_HOST || process.env.MONGODB_HOST;
 mongoPort = process.env.MONGODB_SERVICE_PORT || process.env.MONGODB_PORT;
 
 console.dir(process.env);
-console.dir(process.env);
 mongoUrl = mongoHost + ':' +  mongoPort;
 
 // if (mongoUrl == null) {
