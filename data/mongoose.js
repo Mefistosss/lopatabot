@@ -6,7 +6,7 @@ var user = null;
 var password = null;
 
 var mongoUrl = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL || process.env.MONGOURL;
-var name = process.env.MONGO_NAME || config.get('mongoName');
+var name = process.env.MONGODB_NAME || process.env.MONGO_NAME || config.get('mongoName');
 
 var options = {
     "keepAlive": true
@@ -38,11 +38,11 @@ var options = {
 //     }
 // }
 
-options.user = process.env.MONGO_USER;
-options.pass = process.env.MONGO_PASS;
+options.user = process.env.MONGODB_USER;
+options.pass = process.env.MONGODB_PASS;
 
-mongoHost = process.env.MONGO_HOST;
-mongoPort = process.env.MONGO_PORT;
+mongoHost = process.env.MONGODB_HOST;
+mongoPort = process.env.MONGODB_PORT;
 
 mongoURL = mongoHost + ':' +  mongoPort;
 
