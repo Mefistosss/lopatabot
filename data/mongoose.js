@@ -61,18 +61,19 @@ mongoUrl = mongoHost + ':' +  mongoPort;
 var user = process.env.MONGODB_USER;
 var pass = process.env.MONGODB_PASSWORD;
 
-mongoUrl = 'mongodb://' + user + ':' + pass + '@' + mongoHost + ':' + mongoPort + '/' + name;
+// mongoUrl = 'mongodb://' + user + ':' + pass + '@' + mongoHost + ':' + mongoPort + '/' + name;
+mongoUrl = user + ':' + pass + '@' + mongoHost + ':' + mongoPort + '/' + name;
 console.log('MONGOURL', mongoUrl);
 
-// mongoose.connect(mongoUrl);
+mongoose.connect(mongoUrl);
 
-var MongoDB = mongoose.connect(mongoUrl).connection;
-MongoDB.on('error', function(err) {
-    console.log(err.message);
-});
+// var MongoDB = mongoose.connect(mongoUrl).connection;
+// MongoDB.on('error', function(err) {
+//     console.log(err.message);
+// });
 
-MongoDB.once('open', function() {
-    console.log("mongodb connection open");
-});
+// MongoDB.once('open', function() {
+//     console.log("mongodb connection open");
+// });
 
 module.exports = mongoose;
