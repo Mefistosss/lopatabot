@@ -52,19 +52,24 @@ mongoUrl = mongoHost + ':' +  mongoPort;
 // }
 
 
-
-// mongoUrl = 'mongodb://' + mongoUrl + '/' + name;
-// console.log('MONGOURL', mongoUrl);
-// mongoose.connect(mongoUrl, options);
-
-
-var user = process.env.MONGODB_USER;
-var pass = process.env.MONGODB_PASSWORD;
-
-mongoUrl = 'mongodb://' + user + ':' + pass + '@' + mongoHost + ':' + mongoPort + '/' + name;
+mongoUrl = 'mongodb://' + mongoUrl + '/' + name;
 console.log('MONGOURL', mongoUrl);
+mongoose.connect(mongoUrl, options, function (err) {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log('mongoose is connected');
+    }
+});
 
-mongoose.connect(mongoUrl);
+
+// var user = process.env.MONGODB_USER;
+// var pass = process.env.MONGODB_PASSWORD;
+
+// mongoUrl = 'mongodb://' + user + ':' + pass + '@' + mongoHost + ':' + mongoPort + '/' + name;
+// console.log('MONGOURL', mongoUrl);
+
+// mongoose.connect(mongoUrl);
 
 // var MongoDB = mongoose.connect(mongoUrl).connection;
 // MongoDB.on('error', function(err) {
