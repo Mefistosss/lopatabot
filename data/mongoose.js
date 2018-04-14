@@ -1,6 +1,6 @@
 var config = require('config');
 var mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
+// mongoose.Promise = global.Promise;
 
 var user = null;
 var password = null;
