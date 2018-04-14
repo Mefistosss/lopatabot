@@ -8,30 +8,6 @@ var version = require('./package.json').version;
 var makeChatMessage = require('./lib/makeChatMessage.js');
 var db = require('./data/db.js');
 
-var express = require('express');
-var app = express();
-
-app.get('/', function (req, res) {
-    res.send('Hello World!');
-});
-
-app.get('/pagecount', function (req, res) {
-    // try to initialize the db on every request if it's not already
-    // initialized.
-    // if (!db) {
-    //     initDb(function(err){});
-    // }
-    // if (db) {
-    //     db.collection('counts').count(function(err, count ){
-    //     res.send('{ pageCount: ' + count + '}');
-    //     });
-    // } else {
-    //     res.send('{ pageCount: -1 }');
-    // }
-
-    res.send('{ pageCount: ' + 1 + '}');
-});
-
 db(function () {
     var PORT = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || config.get('port');
     var TOKEN = process.env.TOKEN;
@@ -146,9 +122,4 @@ db(function () {
     console.log('PORT', PORT);
     console.log('URL', URL);
     console.log('TOKEN', TOKEN);
-});
-
-
-app.listen(process.env.PORT_2, function () {
-    console.log('Example app listening on port 3000!');
 });
