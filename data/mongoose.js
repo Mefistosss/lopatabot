@@ -56,7 +56,8 @@ mongoUrl = mongoHost + ':' +  mongoPort;
 // }
 
 
-mongoUrl = 'mongodb://' + mongoUrl + '/' + name;
+// mongoUrl = 'mongodb://' + mongoUrl + '/' + name;
+mongoUrl = mongoUrl + '/' + name;
 
 console.log('MONGOURL', mongoUrl, options);
 mongoose.connect(mongoUrl, options, function (err) {
