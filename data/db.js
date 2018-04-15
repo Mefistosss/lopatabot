@@ -1,5 +1,5 @@
 var mongoose = require('./mongoose.js');
-mongoose.set('debug', process.env.NODE_ENV === 'development');
+// mongoose.set('debug', process.env.NODE_ENV === 'development');
 var async = require('async');
 
 function open(callback) {

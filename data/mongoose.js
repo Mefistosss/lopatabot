@@ -5,7 +5,7 @@ mongoose.Promise = global.Promise;
 var user = null;
 var password = null;
 
-var mongoUrl = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL || process.env.MONGOURL;
+// var mongoUrl = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL || process.env.MONGOURL;
 var name = process.env.MONGODB_DATABASE || process.env.MONGODB_NAME || process.env.MONGO_NAME || config.get('mongoName');
 
 var options = {
@@ -54,6 +54,7 @@ mongoUrl = mongoHost + ':' +  mongoPort;
 //     mongoUrl = config.get('mongoUrl');
 // }
 
+console.log(global.Promise);
 
 mongoUrl = 'mongodb://' + mongoUrl + '/' + name;
 console.log('MONGOURL', mongoUrl, options);
