@@ -112,6 +112,8 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
   }
 }
 
+mongoUrl = '127.0.0.1:27017/' + process.env.MONGODB_DATABASE;
+
 console.log('MONGOURL', mongoUrl);
 mongoose.connect(mongoUrl, function (err) {
     if (err) {
