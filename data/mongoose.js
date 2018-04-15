@@ -56,8 +56,7 @@ mongoUrl = mongoHost + ':' +  mongoPort;
 
 console.log(global.Promise);
 
-// mongoUrl = 'mongodb://' + mongoUrl + '/' + name;
-mongoUrl = 'http://' + mongoUrl + '/' + name;
+mongoUrl = 'mongodb://' + mongoUrl + '/' + name;
 console.log('MONGOURL', mongoUrl, options);
 mongoose.connect(mongoUrl, options, function (err) {
     if (err) {
