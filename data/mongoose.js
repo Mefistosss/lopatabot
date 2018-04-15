@@ -113,7 +113,7 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
 }
 
 console.log('MONGOURL', mongoUrl);
-mongoose.connect(mongoUrl function (err) {
+mongoose.connect(mongoUrl, function (err) {
     if (err) {
         console.log('connect error');
         console.log(err);
