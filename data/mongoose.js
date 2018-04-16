@@ -5,8 +5,6 @@ var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 var options = ['keepAlive=true', 'autoReconnect=true', 'reconnectTries=50', 'reconnectInterval=2000'];
-
-var mongoName = process.env.MONGODB_DATABASE || config.get('mongoName');
 var mongoURLLabel, mongoURL = null;
 
 if (process.env.DATABASE_SERVICE_NAME) {
@@ -27,11 +25,11 @@ if (process.env.DATABASE_SERVICE_NAME) {
         mongoURL += mongoHost + ':' +  mongoPort + '/' + mongoDatabase;
     }
 } else {
-    mongoURL = 'mongodb://' + config.get('mongoUrl');
+    mongoURL = 'mongodb://' + config.get('mongoUrl') + config.get('mongoName');
     mongoURLLabel = mongoURL;
 }
 
-mongoURL = mongoURL + '/' + mongoName + '?' + options.join('&');
+mongoURL = mongoURL + '?' + options.join('&');
 
 
 
