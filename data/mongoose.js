@@ -115,14 +115,16 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
 // mongoUrl = 'mongodb://' + mongoURL;
 
 console.log('MONGOURL', mongoURL);
-mongoose.connect(mongoURL, function (err) {
-    if (err) {
-        console.log('connect error');
-        console.log(err);
-    } else {
-        console.log('mongoose is connected');
-    }
-});
+// mongoose.connect(mongoURL, function (err) {
+//     if (err) {
+//         console.log('connect error');
+//         console.log(err);
+//     } else {
+//         console.log('mongoose is connected');
+//     }
+// });
+
+mongoose.connect(mongoURL);
 
 
 
