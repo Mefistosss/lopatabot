@@ -112,7 +112,7 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
   }
 }
 
-// mongoUrl = 'mongodb://'+mongoURL+'/' + process.env.MONGODB_DATABASE;
+mongoUrl = 'mongodb://' + mongoURL;
 
 console.log('MONGOURL', mongoUrl);
 mongoose.connect(mongoUrl, function (err) {
