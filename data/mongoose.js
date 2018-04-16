@@ -124,7 +124,7 @@ console.log('MONGOURL', mongoURL);
 //     }
 // });
 
-mongoose.connect(mongoURL);
+mongoose.connect(mongoURL, options);
 
 
 
