@@ -8,6 +8,11 @@ var version = require('./package.json').version;
 var makeChatMessage = require('./lib/makeChatMessage.js');
 var db = require('./data/db.js');
 
+process.on('unhandledRejection', (reason, p) => {
+    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+    // application specific logging, throwing an error, or other logic here
+});
+
 db(function () {
     var PORT = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || config.get('port');
     var TOKEN = process.env.TOKEN;
@@ -119,7 +124,6 @@ db(function () {
 
     groups.startJob();
 
-    console.log('PORT', PORT);
     console.log('URL', URL);
-    console.log('TOKEN', TOKEN);
+    console.log('PORT', PORT);
 });
