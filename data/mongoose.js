@@ -7,7 +7,7 @@ mongoose.Promise = global.Promise;
 var options = ['keepAlive=true', 'autoReconnect=true', 'reconnectTries=50', 'reconnectInterval=2000'];
 
 var mongoName = process.env.MONGODB_DATABASE || config.get('mongoName');
-var mongoURL = null;
+var mongoURLLabel, mongoURL = null;
 
 if (process.env.DATABASE_SERVICE_NAME) {
     var mongoServiceName = process.env.DATABASE_SERVICE_NAME.toUpperCase(),
@@ -28,6 +28,7 @@ if (process.env.DATABASE_SERVICE_NAME) {
     }
 } else {
     mongoURL = 'mongodb://' + config.get('mongoUrl');
+    mongoURLLabel = mongoURL;
 }
 
 mongoURL = mongoURL + '/' + mongoName + '?' + options.join('&');
