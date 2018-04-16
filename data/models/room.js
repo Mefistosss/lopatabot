@@ -1,4 +1,5 @@
-var mongoose = require('../mongoose.js'),
+// var mongoose = require('../mongoose.js'),
+var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var schema = new Schema({
