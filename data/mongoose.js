@@ -4,7 +4,7 @@ var config = require('config');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-var options = ['keepAlive=true', 'autoReconnect=true', 'reconnectTries=50', 'reconnectInterval=2000'];
+var options = ['keepAlive=500', 'autoReconnect=true', 'reconnectTries=50', 'reconnectInterval=2000'];
 var mongoURLLabel, mongoURL = null;
 
 if (process.env.DATABASE_SERVICE_NAME) {
