@@ -4,7 +4,14 @@ var config = require('config');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-var options = ['keepAlive=500', 'autoReconnect=true', 'reconnectTries=50', 'reconnectInterval=2000'];
+var options = {
+    useMongoClient: true,
+    autoIndex: false, // Don't build indexes
+    reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
+    reconnectInterval: 1000
+    // If not connected, return errors immediately rather than waiting for reconnect
+    // bufferMaxEntries: 0
+};
 var mongoURLLabel, mongoURL = null;
 
 if (process.env.DATABASE_SERVICE_NAME) {
@@ -29,10 +36,8 @@ if (process.env.DATABASE_SERVICE_NAME) {
     mongoURLLabel = mongoURL;
 }
 
-mongoURL = mongoURL + '?' + options.join('&');
-
 console.log('MONGOURL', mongoURLLabel);
 console.log('MONGOOPTIONS', options);
-mongoose.connect(mongoURL);
+mongoose.connect(mongoURL, options);
 
 module.exports = mongoose;
