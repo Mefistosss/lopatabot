@@ -96,25 +96,53 @@ bot.onText(/\/version/, function (msg) {
 });
 
 var groups = new Groups(function (ids) {
-    if (ids.length) {
-        anekdot(function (data) {
-            var message = makeChatMessage(data, 'morning');
-            ids.forEach(function (id) {
-                bot.sendMessage(id, message, {
-                    reply_markup: {
-                        inline_keyboard: [
-                            [
-                                {
-                                    text: "Хочу еще!",
-                                    callback_data: 'i_want_more'
-                                }
-                            ]
-                        ]
-                    }
-                });
-            });
+    var sendAnekdot = function (_id, _message) {
+        bot.sendMessage(_id, _message, {
+            reply_markup: {
+                inline_keyboard: [
+                    [
+                        {
+                            text: "Хочу еще!",
+                            callback_data: 'i_want_more'
+                        }
+                    ]
+                ]
+            }
         });
+    };
+
+    var getPrivatePhras = function (name) {
+        return "Доброе утро " + name + "!\n\n";
+    };
+
+    var each = function (_ids, callback, isPrivate) {
+        if (_ids.length) {
+            anekdot(function (data) {
+                var message;
+                if (isPrivate) {
+                    message = data; 
+                } else {
+                    message = makeChatMessage(data, 'morning');
+                }
+
+                _ids.forEach(function (idData) {
+                    if (isPrivate) {
+                        message = getPrivatePhras(idData.name) + message;
+                    }
+                    sendAnekdot(idData.id, message);
+                });
+                callback();
+            });
+        } else {
+            callback();
+        }
     }
+
+    each(ids.group, function () {
+        each(ids.private, function () {
+            console.log('Anekdots was sent.');
+        }, true);
+    });
 });
 
 bot.onText(/\/startnotices/, function (msg) {
@@ -148,6 +176,10 @@ bot.onText(/\/stopnotices/, function (msg) {
 //             }
 //         });
 //     });
+// });
+
+// bot.onText(/\/send/, function (msg) {
+//     groups.send();
 // });
 
 bot.on('callback_query', function (query) {

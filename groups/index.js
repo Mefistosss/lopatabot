@@ -5,12 +5,24 @@ var isEmptyString = require('../lib/isEmptyString.js');
 var getSubscribeMessage = require('../lib/getSubscribeMessage.js');
 
 function getIds (callback) {
-    var result = [];
+    var result = {
+        private: [],
+        group: []
+    };
 
     Room.find({}, function(err, rooms) {
         if (!err) {
             rooms.forEach(function(room) {
-                result.push(room.room_id);
+                if (!!room.title) {
+                    result.group.push({
+                        id: room.room_id
+                    });
+                } else {
+                    result.private.push({
+                        id: room.room_id,
+                        name: room.first_name || room.username
+                    });
+                }
             });    
         }
         
@@ -27,16 +39,21 @@ var Groups = function (tickCallback) {
         this.job = new cron.CronJob({
             cronTime: config.get('jobTime'),
             onTick: function () {
-                getIds(function (ids) {
-                    if (ids.length) {
-                        self.tickCallback(ids);
-                    }
-                });
+                self.send();
             },
             start: false,
             timeZone: 'Europe/Kiev'
         });
     } catch(ex) {}
+};
+
+Groups.prototype.send = function () {
+    var self = this;
+    getIds(function (ids) {
+        if (ids.private.length || ids.group.length) {
+            self.tickCallback(ids);
+        }
+    });
 };
 
 Groups.prototype.add = function (data, callback) {
