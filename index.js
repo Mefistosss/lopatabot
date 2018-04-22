@@ -161,27 +161,6 @@ bot.onText(/\/stopnotices/, function (msg) {
     });
 });
 
-// bot.onText(/\/test/, function (msg) {
-//     anekdot(function (data) {
-//         bot.sendMessage(msg.chat.id, data, {
-//             reply_markup: {
-//                 inline_keyboard: [
-//                     [
-//                         {
-//                             text: "Хочу еще!",
-//                             callback_data: 'i_want_more'
-//                         }
-//                     ]
-//                 ]
-//             }
-//         });
-//     });
-// });
-
-// bot.onText(/\/send/, function (msg) {
-//     groups.send();
-// });
-
 bot.on('callback_query', function (query) {
     if (query.data === 'i_want_more') {
         anekdot(function (data) {
