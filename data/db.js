@@ -38,8 +38,10 @@ module.exports = function(callback) {
         open,
         requireModels
     ], function(err) {
-        if (err) throw err;
+        if (err) {
+            console.log("MONGOOSE", err);
+        }
         // mongoose.disconnect();
-        callback();
+        callback(err);
     });
 };
