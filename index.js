@@ -122,8 +122,11 @@ bot.onText(/\/stopnotices/, function (msg) {
     });
 });
 
-db(function () {
-    groups.startJob();
+db(function (err) {
+    if (!err) {
+        console.log('JOB STARTED');
+        groups.startJob();
+    }
 });
 
 console.log('URL', URL);
