@@ -100,7 +100,18 @@ var groups = new Groups(function (ids) {
         anekdot(function (data) {
             var message = makeChatMessage(data, 'morning');
             ids.forEach(function (id) {
-                bot.sendMessage(id, message);
+                bot.sendMessage(id, message, {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [
+                                {
+                                    text: "Хочу еще!",
+                                    callback_data: 'i_want_more'
+                                }
+                            ]
+                        ]
+                    }
+                });
             });
         });
     }
@@ -120,6 +131,33 @@ bot.onText(/\/stopnotices/, function (msg) {
             bot.sendMessage(msg.chat.id, message);
         }
     });
+});
+
+// bot.onText(/\/test/, function (msg) {
+//     anekdot(function (data) {
+//         bot.sendMessage(msg.chat.id, data, {
+//             reply_markup: {
+//                 inline_keyboard: [
+//                     [
+//                         {
+//                             text: "Хочу еще!",
+//                             callback_data: 'i_want_more'
+//                         }
+//                     ]
+//                 ]
+//             }
+//         });
+//     });
+// });
+
+bot.on('callback_query', function (query) {
+    if (query.data === 'i_want_more') {
+        anekdot(function (data) {
+            var parse = 'Oooo, ' + (query.from.first_name || query.from.username) + ' хочет еще.\n\n';
+            bot.sendMessage(query.message.chat.id, parse + data);
+            bot.answerCallbackQuery({ callback_query_id: query.id }); 
+        });
+    }
 });
 
 db(function (err) {

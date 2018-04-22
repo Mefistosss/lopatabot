@@ -32,7 +32,7 @@ if (process.env.DATABASE_SERVICE_NAME) {
         mongoURL += mongoHost + ':' +  mongoPort + '/' + mongoDatabase;
     }
 } else {
-    mongoURL = 'mongodb://' + config.get('mongoUrl') + config.get('mongoName');
+    mongoURL = 'mongodb://' + config.get('mongoUrl') + ':' + config.get('mongoPort') + '/' + config.get('mongoName');
     mongoURLLabel = mongoURL;
 }
 

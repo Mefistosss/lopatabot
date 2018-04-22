@@ -48,6 +48,7 @@
 
     "mongoUrl": "localhost",
     "mongoName": "lopatabot",
+    "mongoPort": "27017",
 
     "roomsFile": "./rooms" 
 }
