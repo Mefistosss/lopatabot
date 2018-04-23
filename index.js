@@ -126,10 +126,11 @@ var groups = new Groups(function (ids) {
                 }
 
                 _ids.forEach(function (idData) {
+                    var prefix = "";
                     if (isPrivate) {
-                        message = getPrivatePhras(idData.name) + message;
+                        prefix = getPrivatePhras(idData.name);
                     }
-                    sendAnekdot(idData.id, message);
+                    sendAnekdot(idData.id, prefix + message);
                 });
                 callback();
             });
