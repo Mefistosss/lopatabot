@@ -5,8 +5,9 @@ var getMessage = require('./lib/wrap.js');
 var anekdot = require('./anekdots');
 var Groups = require('./groups');
 var version = require('./package.json').version;
-var makeChatMessage = require('./lib/makeChatMessage.js');
 var db = require('./data/db.js');
+
+var morningJob = require('./jobs/morning.js');
 
 process.on('unhandledRejection', (reason, p) => {
     console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
@@ -95,55 +96,14 @@ bot.onText(/\/version/, function (msg) {
     bot.sendMessage(msg.chat.id, version);
 });
 
-var groups = new Groups(function (ids) {
-    var sendAnekdot = function (_id, _message) {
-        bot.sendMessage(_id, _message, {
-            reply_markup: {
-                inline_keyboard: [
-                    [
-                        {
-                            text: "Хочу еще!",
-                            callback_data: 'i_want_more'
-                        }
-                    ]
-                ]
-            }
-        });
-    };
-
-    var getPrivatePhras = function (name) {
-        return "Доброе утро " + name + "!\n\n";
-    };
-
-    var each = function (_ids, callback, isPrivate) {
-        if (_ids.length) {
-            anekdot(function (data) {
-                var message;
-                if (isPrivate) {
-                    message = data; 
-                } else {
-                    message = makeChatMessage(data, 'morning');
-                }
-
-                _ids.forEach(function (idData) {
-                    var prefix = "";
-                    if (isPrivate) {
-                        prefix = getPrivatePhras(idData.name);
-                    }
-                    sendAnekdot(idData.id, prefix + message);
-                });
-                callback();
+var groups = new Groups(function (ids, typeOfMessage) {
+    switch (typeOfMessage) {
+        case 'morning':
+            morningJob(bot, ids, function () {
+                console.log('Morning work is ended!');
             });
-        } else {
-            callback();
-        }
+            break;
     }
-
-    each(ids.group, function () {
-        each(ids.private, function () {
-            console.log('Anekdots was sent.');
-        }, true);
-    });
 });
 
 bot.onText(/\/startnotices/, function (msg) {
@@ -165,7 +125,16 @@ bot.onText(/\/stopnotices/, function (msg) {
 bot.on('callback_query', function (query) {
     if (query.data === 'i_want_more') {
         anekdot(function (data) {
-            var parse = 'Oooo, ' + (query.from.first_name || query.from.username) + ' хочет еще.\n\n';
+            var parse;
+
+            if (query.message.chat.type === 'group') {
+                bot.editMessageText(query.message.text, {
+                    chat_id: query.message.chat.id,
+                    message_id: query.message.message_id
+                });
+            }
+
+            parse = 'Oooo, ' + (query.from.first_name || query.from.username) + ' хочет еще.\n\n';
             bot.sendMessage(query.message.chat.id, parse + data);
             bot.answerCallbackQuery({ callback_query_id: query.id }); 
         });
