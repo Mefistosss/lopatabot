@@ -125,7 +125,16 @@ bot.onText(/\/stopnotices/, function (msg) {
 bot.on('callback_query', function (query) {
     if (query.data === 'i_want_more') {
         anekdot(function (data) {
-            var parse = 'Oooo, ' + (query.from.first_name || query.from.username) + ' хочет еще.\n\n';
+            var parse;
+
+            if (query.message.chat.type === 'group') {
+                bot.editMessageText(query.message.text, {
+                    chat_id: query.message.chat.id,
+                    message_id: query.message.message_id
+                });
+            }
+
+            parse = 'Oooo, ' + (query.from.first_name || query.from.username) + ' хочет еще.\n\n';
             bot.sendMessage(query.message.chat.id, parse + data);
             bot.answerCallbackQuery({ callback_query_id: query.id }); 
         });
