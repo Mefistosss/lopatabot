@@ -141,10 +141,6 @@ bot.on('callback_query', function (query) {
     }
 });
 
-bot.onText(/\/send/, function (msg) {
-    groups.send('morning');
-});
-
 db(function (err) {
     if (!err) {
         console.log('JOB STARTED');
