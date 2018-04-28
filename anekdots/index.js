@@ -4,57 +4,19 @@ var error = config.get('error');
 var phrases = config.get('insteadAnekdot');
 var sites = config.get('anekdotSites');
 
-var lastAnekdots = [];
-
 var getArticle = function (callback, index) {
-    var anekdot, isNotLast;
-
-    isNotLast = index < sites.length - 1;
-
-    anekdot = require('./' + sites[index].name + '/index.js');
-
-    anekdot(sites[index].url, function (err, data) {
-        if (err) {
-            if (isNotLast) {
-                getArticle(callback, index + 1);
-            } else {
-                callback(err);
-            }
-        } else {
-            if (data && data.trim() !== '') {
-                if (lastAnekdots[index] === data) {
-                    if (isNotLast) {
-                        getArticle(callback, index + 1);
-                    } else {
-                        callback(null, data, true);
-                    }
-                } else {
-                    lastAnekdots[index] = data;
-                    callback(null, data);
-                }
-            } else {
-                if (isNotLast) {
-                    getArticle(callback, index + 1);
-                } else {
-                    callback(null, null);
-                }
-            }
-        }
-    });
+    var anekdot = require('./' + sites[index].name + '/index.js');
+    anekdot(sites[index].url, callback);
 };
 
 module.exports = function(callback) {
-    getArticle(function (err, data, isSame) {
+    getArticle(function (err, data) {
         var currentAnekdot;
         if (err) {
             currentAnekdot = error;
         } else {
             if (data) {
-                if (isSame) {
-                    currentAnekdot = phrases[random(phrases.length - 1)];
-                } else {
-                    currentAnekdot = data;
-                }
+                currentAnekdot = data;
             } else {
                 currentAnekdot = phrases[random(phrases.length - 1)];
             }

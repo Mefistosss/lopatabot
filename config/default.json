@@ -12,12 +12,12 @@
 
     "anekdotSites": [
         {
-            "name": "prikol",
-            "url": "https://prikol.i.ua/lenta/anekdot/"
-        },
-        {
             "name": "bashorg",
             "url": "http://bashorg.org/casual"
+        },
+        {
+            "name": "prikol",
+            "url": "https://prikol.i.ua/lenta/anekdot/"
         }
     ],
 
