@@ -39,7 +39,7 @@ var Groups = function (tickCallback) {
         this.job = new cron.CronJob({
             cronTime: config.get('jobTime'),
             onTick: function () {
-                self.send();
+                self.send('morning');
             },
             start: false,
             timeZone: 'Europe/Kiev'
@@ -47,11 +47,11 @@ var Groups = function (tickCallback) {
     } catch(ex) {}
 };
 
-Groups.prototype.send = function () {
+Groups.prototype.send = function (type) {
     var self = this;
     getIds(function (ids) {
         if (ids.private.length || ids.group.length) {
-            self.tickCallback(ids);
+            self.tickCallback(ids, type);
         }
     });
 };
