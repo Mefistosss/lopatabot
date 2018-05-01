@@ -28,6 +28,7 @@ function open(callback) {
 
 function requireModels(callback) {
     require('./models/room');
+    require('./models/hashdata');
 
     async.each(Object.keys(mongoose.models), function(modelName, _callback) {
         mongoose.models[modelName].ensureIndexes(_callback);
