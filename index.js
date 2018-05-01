@@ -3,12 +3,14 @@ var TelegramBot = require('node-telegram-bot-api');
 var config = require('config');
 var getMessage = require('./lib/wrap.js');
 var anekdot = require('./anekdots');
+var coub = require('./coub');
 var Groups = require('./groups');
 var version = require('./package.json').version;
 var db = require('./data/db.js');
 
 var morningJob = require('./jobs/morning.js');
 var bashcomicsJob = require('./jobs/bashcomics.js');
+var coubJob = require('./jobs/coub.js');
 
 process.on('unhandledRejection', (reason, p) => {
     console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
@@ -93,6 +95,12 @@ bot.onText(/\/anekdot/, function (msg) {
     });
 });
 
+bot.onText(/\/coub/, function (msg) {
+    coub(function (data) {
+        bot.sendMessage(msg.chat.id, data);
+    });
+});
+
 bot.onText(/\/version/, function (msg) {
     bot.sendMessage(msg.chat.id, version);
 });
@@ -107,6 +115,11 @@ var groups = new Groups(function (ids, typeOfMessage) {
         case 'bashcomics':
             bashcomicsJob(bot, ids, function () {
                 console.log('Comics work is ended!');
+            });
+            break;
+        case 'coub':
+            coubJob(bot, ids, function () {
+                console.log('Coub work is ended!');
             });
             break;
     }
@@ -144,7 +157,26 @@ bot.on('callback_query', function (query) {
             bot.sendMessage(query.message.chat.id, parse + data);
             bot.answerCallbackQuery({ callback_query_id: query.id }); 
         });
+    } else if (query.data === 'i_want_more_coub') {
+        coub(function (data) {
+            var parse;
+
+            if (query.message.chat.type === 'group') {
+                bot.editMessageText(query.message.text, {
+                    chat_id: query.message.chat.id,
+                    message_id: query.message.message_id
+                });
+            }
+
+            parse = 'Oooo, ' + (query.from.first_name || query.from.username) + ' хочет еще.\n\n';
+            bot.sendMessage(query.message.chat.id, parse + data);
+            bot.answerCallbackQuery({ callback_query_id: query.id });
+        });
     }
+});
+
+bot.onText(/\/send/, function (msg) {
+    groups.send('coub');
 });
 
 db(function (err) {
