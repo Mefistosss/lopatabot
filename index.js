@@ -8,6 +8,7 @@ var version = require('./package.json').version;
 var db = require('./data/db.js');
 
 var morningJob = require('./jobs/morning.js');
+var bashcomicsJob = require('./jobs/bashcomics.js');
 
 process.on('unhandledRejection', (reason, p) => {
     console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
@@ -103,6 +104,11 @@ var groups = new Groups(function (ids, typeOfMessage) {
                 console.log('Morning work is ended!');
             });
             break;
+        case 'bashcomics':
+            bashcomicsJob(bot, ids, function () {
+                console.log('Comics work is ended!');
+            });
+            break;
     }
 });
 
@@ -139,6 +145,10 @@ bot.on('callback_query', function (query) {
             bot.answerCallbackQuery({ callback_query_id: query.id }); 
         });
     }
+});
+
+bot.onText(/\/send/, function (msg) {
+    groups.send('bashcomics');
 });
 
 db(function (err) {
