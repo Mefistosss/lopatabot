@@ -8,6 +8,7 @@ var version = require('./package.json').version;
 var db = require('./data/db.js');
 
 var morningJob = require('./jobs/morning.js');
+var bashcomicsJob = require('./jobs/bashcomics.js');
 
 process.on('unhandledRejection', (reason, p) => {
     console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
@@ -101,6 +102,11 @@ var groups = new Groups(function (ids, typeOfMessage) {
         case 'morning':
             morningJob(bot, ids, function () {
                 console.log('Morning work is ended!');
+            });
+            break;
+        case 'bashcomics':
+            bashcomicsJob(bot, ids, function () {
+                console.log('Comics work is ended!');
             });
             break;
     }
