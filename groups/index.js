@@ -36,6 +36,7 @@ var Groups = function (tickCallback) {
     var self = this;
     this.job1 = null;
     this.job2 = null;
+    this.job3 = null;
 
     try {
         this.job1 = new cron.CronJob({
@@ -53,6 +54,17 @@ var Groups = function (tickCallback) {
             cronTime: config.get('jobTime2'),
             onTick: function () {
                 self.send('bashcomics');
+            },
+            start: false,
+            timeZone: 'Europe/Kiev'
+        });
+    } catch(ex) {}
+
+    try {
+        this.job3 = new cron.CronJob({
+            cronTime: config.get('jobTime3'),
+            onTick: function () {
+                self.send('coub');
             },
             start: false,
             timeZone: 'Europe/Kiev'
@@ -150,6 +162,10 @@ Groups.prototype.startJob = function () {
     if (this.job2 !== null && !this.job2.running) {
         this.job2.start();
     }
+
+    if (this.job3 !== null && !this.job3.running) {
+        this.job3.start();
+    }
 };
     
 Groups.prototype.stopJob = function () {
@@ -159,6 +175,10 @@ Groups.prototype.stopJob = function () {
 
     if (this.job2 !== null && this.job2.running) {
         this.job2.stop();
+    }
+
+    if (this.job3 !== null && this.job3.running) {
+        this.job3.stop();
     }
 };
 
