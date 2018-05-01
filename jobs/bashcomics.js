@@ -1,10 +1,10 @@
 var async = require('async');
 var config = require('config');
 var comics = require('../comics/bash');
-var HashData = require('../../data/models/hashdata').HashData;
+var HashData = require('../data/models/hashdata').HashData;
 var delivery = require('../lib/delivery.js');
 
-var message = config.get('phrases.newComics') + "\n\n";
+var phrase = config.get('phrases.newComics');
 
 function checkComics (results, next) {
     var hd, time;
@@ -54,15 +54,15 @@ function checkComics (results, next) {
     }
 }
 
-function send (ids, comicsUrl, callback) {
+function send (ids, callback, next) {
     if (ids.length) {
         delivery(ids, function (groupOfIds) {
             groupOfIds.forEach(function (idData) {
-                bot.sendMessage(idData.id, message + comicsUrl);
+                callback(idData.id);
             });
-        }, callback);
+        }, next);
     } else {
-        callback();
+        next();
     }
 }
 
@@ -72,14 +72,18 @@ module.exports = function(bot, ids, callback) {
         canSend: ['comics', checkComics],
         group: ['canSend', function (results, next) {
             if (results.canSend) {
-                send(ids.group, results.comics.url, next);
+                send(ids.group, function (id) {
+                    bot.sendPhoto(id, results.comics.url,  { caption: phrase });
+                }, next);
             } else {
                 next();
             }
         }],
         private: ['group', function (results, next) {
             if (results.canSend) {
-                send(ids.private, results.comics.url, next);
+                send(ids.private, function (id) {
+                    bot.sendPhoto(id, results.comics.url, { caption: phrase });
+                }, next);
             } else {
                 next();
             }
