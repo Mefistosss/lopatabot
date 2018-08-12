@@ -11,6 +11,7 @@ var db = require('./data/db.js');
 var morningJob = require('./jobs/morning.js');
 var bashcomicsJob = require('./jobs/bashcomics.js');
 var coubJob = require('./jobs/coub.js');
+var iWantMoreFilter = require('./lib/iWantMoreFilter.js');
 
 process.on('unhandledRejection', (reason, p) => {
     console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
@@ -108,6 +109,7 @@ bot.onText(/\/version/, function (msg) {
 var groups = new Groups(function (ids, typeOfMessage) {
     switch (typeOfMessage) {
         case 'morning':
+            iWantMoreFilter.clear();
             morningJob(bot, ids, function () {
                 console.log('Morning work is ended!');
             });
@@ -143,35 +145,39 @@ bot.onText(/\/stopnotices/, function (msg) {
 
 bot.on('callback_query', function (query) {
     if (query.data === 'i_want_more') {
-        anekdot(function (data) {
-            var parse;
+        if (iWantMoreFilter.check(query.message.message_id, query.message.chat.type)) {
+            anekdot(function (data) {
+                var parse;
 
-            if (query.message.chat.type === 'group') {
-                bot.editMessageText(query.message.text, {
-                    chat_id: query.message.chat.id,
-                    message_id: query.message.message_id
-                });
-            }
+                if (query.message.chat.type === 'group') {
+                    bot.editMessageText(query.message.text, {
+                        chat_id: query.message.chat.id,
+                        message_id: query.message.message_id
+                    });
+                }
 
-            parse = 'Oooo, ' + (query.from.first_name || query.from.username) + ' хочет еще.\n\n';
-            bot.sendMessage(query.message.chat.id, parse + data);
-            bot.answerCallbackQuery({ callback_query_id: query.id }); 
-        });
+                parse = 'Oooo, ' + (query.from.first_name || query.from.username) + ' хочет еще.\n\n';
+                bot.sendMessage(query.message.chat.id, parse + data);
+                bot.answerCallbackQuery({ callback_query_id: query.id }); 
+            });
+        }
     } else if (query.data === 'i_want_more_coub') {
-        coub(function (data) {
-            var parse;
+        if (iWantMoreFilter.check(query.message.message_id, query.message.chat.type)) {
+            coub(function (data) {
+                var parse;
 
-            if (query.message.chat.type === 'group') {
-                bot.editMessageText(query.message.text, {
-                    chat_id: query.message.chat.id,
-                    message_id: query.message.message_id
-                });
-            }
+                if (query.message.chat.type === 'group') {
+                    bot.editMessageText(query.message.text, {
+                        chat_id: query.message.chat.id,
+                        message_id: query.message.message_id
+                    });
+                }
 
-            parse = 'Oooo, ' + (query.from.first_name || query.from.username) + ' хочет еще.\n\n';
-            bot.sendMessage(query.message.chat.id, parse + data);
-            bot.answerCallbackQuery({ callback_query_id: query.id });
-        });
+                parse = 'Oooo, ' + (query.from.first_name || query.from.username) + ' хочет еще.\n\n';
+                bot.sendMessage(query.message.chat.id, parse + data);
+                bot.answerCallbackQuery({ callback_query_id: query.id });
+            });
+        }
     }
 });
 
