@@ -4,6 +4,7 @@ var config = require('config');
 var getMessage = require('./lib/wrap.js');
 var anekdot = require('./anekdots');
 var coub = require('./coub');
+var comicsru = require('./comics/xkcd/ru');
 var Groups = require('./groups');
 var version = require('./package.json').version;
 var db = require('./data/db.js');
@@ -98,6 +99,12 @@ bot.onText(/\/anekdot/, function (msg) {
 
 bot.onText(/\/coub/, function (msg) {
     coub(function (data) {
+        bot.sendMessage(msg.chat.id, data);
+    });
+});
+
+bot.onText(/\/comicsru/, function (msg) {
+    comicsru(function (data) {
         bot.sendMessage(msg.chat.id, data);
     });
 });

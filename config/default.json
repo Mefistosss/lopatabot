@@ -14,7 +14,12 @@
     },
 
     "comicsSites": {
-        "bash": "https://bash.im/rss/comics.xml"
+        "bash": "https://bash.im/rss/comics.xml",
+        "xkcd": "https://xkcd.com",
+        "xkcdru": {
+            "url": "https://xkcd.ru",
+            "rss": "http://feeds.feedburner.com/xkcdru?format=xml"
+        }
     },
 
     "anekdotSites": [
