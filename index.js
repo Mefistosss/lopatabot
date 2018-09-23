@@ -5,6 +5,7 @@ var getMessage = require('./lib/wrap.js');
 var anekdot = require('./anekdots');
 var coub = require('./coub');
 var comicsru = require('./comics/xkcd/ru');
+var comics = require('./comics/xkcd/com');
 var Groups = require('./groups');
 var version = require('./package.json').version;
 var db = require('./data/db.js');
@@ -110,6 +111,14 @@ bot.onText(/\/comicsru/, function (msg) {
             bot.sendMessage(msg.chat.id, message);
         }
     }, true, false);
+});
+
+bot.onText(/\/comics/, function (msg) {
+    comics(function (err, message) {
+        if (message) {
+            bot.sendMessage(msg.chat.id, message);
+        }
+    });
 });
 
 bot.onText(/\/version/, function (msg) {
