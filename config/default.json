@@ -18,7 +18,8 @@
         "xkcd": "https://xkcd.com",
         "xkcdru": {
             "url": "https://xkcd.ru",
-            "rss": "http://feeds.feedburner.com/xkcdru?format=xml"
+            "rss": "http://feeds.feedburner.com/xkcdru?format=xml",
+            "nums": "https://xkcd.ru/num/"
         }
     },
 
