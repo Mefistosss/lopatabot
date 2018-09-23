@@ -130,9 +130,9 @@ var groups = new Groups(function (ids, typeOfMessage) {
             });
             break;
         case 'coub':
-            coubJob(bot, ids, function () {
-                console.log('Coub work is ended!');
-            });
+            // coubJob(bot, ids, function () {
+            //     console.log('Coub work is ended!');
+            // });
             break;
         case 'xkcdru':
             xkcdruJob(bot, ids, function () {
