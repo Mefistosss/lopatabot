@@ -4,6 +4,8 @@ var config = require('config');
 var getMessage = require('./lib/wrap.js');
 var anekdot = require('./anekdots');
 var coub = require('./coub');
+var comicsru = require('./comics/xkcd/ru');
+var comics = require('./comics/xkcd/com');
 var Groups = require('./groups');
 var version = require('./package.json').version;
 var db = require('./data/db.js');
@@ -11,6 +13,7 @@ var db = require('./data/db.js');
 var morningJob = require('./jobs/morning.js');
 var bashcomicsJob = require('./jobs/bashcomics.js');
 var coubJob = require('./jobs/coub.js');
+var xkcdruJob = require('./jobs/xkcdru.js');
 var iWantMoreFilter = require('./lib/iWantMoreFilter.js');
 
 process.on('unhandledRejection', (reason, p) => {
@@ -102,6 +105,22 @@ bot.onText(/\/coub/, function (msg) {
     });
 });
 
+bot.onText(/\/comicsru/, function (msg) {
+    comicsru(function (err, message) {
+        if (message) {
+            bot.sendMessage(msg.chat.id, message);
+        }
+    }, true, false);
+});
+
+bot.onText(/\/comics/, function (msg) {
+    comics(function (err, message) {
+        if (message) {
+            bot.sendMessage(msg.chat.id, message);
+        }
+    });
+});
+
 bot.onText(/\/version/, function (msg) {
     bot.sendMessage(msg.chat.id, version);
 });
@@ -120,8 +139,13 @@ var groups = new Groups(function (ids, typeOfMessage) {
             });
             break;
         case 'coub':
-            coubJob(bot, ids, function () {
-                console.log('Coub work is ended!');
+            // coubJob(bot, ids, function () {
+            //     console.log('Coub work is ended!');
+            // });
+            break;
+        case 'xkcdru':
+            xkcdruJob(bot, ids, function () {
+                console.log('xkcdru work is ended!');
             });
             break;
     }
@@ -183,8 +207,8 @@ bot.on('callback_query', function (query) {
 
 db(function (err) {
     if (!err) {
-        console.log('JOB STARTED');
         groups.startJob();
+        console.log('JOB STARTED');
     }
 });
 

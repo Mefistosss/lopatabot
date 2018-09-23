@@ -5,7 +5,8 @@ var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 var options = {
-    useMongoClient: true,
+    useNewUrlParser: true,
+    // useMongoClient: true,
     autoIndex: false, // Don't build indexes
     reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
     reconnectInterval: 1000
