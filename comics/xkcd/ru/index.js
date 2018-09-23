@@ -89,15 +89,15 @@ module.exports = function(callback, isRandom, newNums) {
         if (result) {
             message = '';
 
-            try {
-                message = result.getComics.title;
+            if (result.getComics.title) {
+                message += result.getComics.title;
                 message += '\n\n';
-            } catch(e) {}
+            }
 
-            try {
+            if (result.getComics.comicsText) {
                 message += result.getComics.comicsText;
                 message += '\n\n';
-            } catch(e) {}
+            }
 
             message += result.getComics.img;
         }
