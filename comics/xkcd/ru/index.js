@@ -2,119 +2,106 @@ var async = require('async');
 var config = require('config');
 var domObj = require('../../../lib/getHtml.js');
 var getDomObjects = require('../../../lib/getDomObjects.js');
-// var article = require('./article.js');
-
-var rss = require('../../../lib/getRss.js');
-var parse5 = require('parse5');
+var random = require('../../../lib/random.js');
+var getNums = require('./getNums.js');
+var article = require('./article.js');
 
 var ARTICLE_CLASS = 'main';
-var last = undefined;
+var nums = [];
 
-function getNumber(fromData) {
-    var result = /\/([0-9]+)\//.exec(fromData);
+function isNew(_nums) {
+    var result = false;
 
-    if (result) {
-        result = result[1];
-    }
-
-    return result;
-}
-
-function getImgSrc(str) {
-    var i,
-        result = null;
-
-    try {
-        result = parse5.parse(str);
-        result = result.childNodes[0].childNodes[1].childNodes[0].childNodes[0].attrs;
-
-        for (i = 0; i < result.length; i++) {
-            if (result[i].name === 'src') {
-                result = result[i].value;
-                break;
-            }
+    if (_nums.length) {
+        if (nums.length) {
+            try {
+                result = (parseInt(nums[nums.length - 1], 10) < parseInt(_nums[_nums.length - 1], 10))
+            } catch (e) {}
+        } else {
+            result = true;
         }
-    } catch (e) {
-        result = null;
     }
 
     return result;
 }
 
-module.exports = function(callback, isRandom, newLast) {
-
-isRandom = true;
-// newLast = true;
-
+module.exports = function(callback, isRandom, newNums) {
     async.auto({
-        getLast: function (_callback) {
-            if (last && !newLast) {
-                _callback(null, last);
+        getNums: function (_callback) {
+            if (nums.length && !newNums) {
+                _callback(null, {
+                    isNew: false,
+                    nums: nums
+                });
             } else {
-                var url = config.get('comicsSites.xkcdru.rss'), item;
-                rss(url, function (err, items) {
+                getNums(function (err, _nums) {
                     if (err) {
-                        _callback(err);
+                        _callback(null, {
+                            isNew: false,
+                            nums: nums
+                        });
                     } else {
-                        if (items.length) {
-                            item = items[0];
-                            item.img = getImgSrc(item.content);
-                            _callback(null, item);
-                        } else {
-                            _callback(true);
-                        }
+                        var _isNew = isNew(_nums);
+
+                        if (_isNew) { nums = _nums; }
+
+                        _callback(null, {
+                            isNew: _isNew,
+                            nums: nums
+                        });
                     }
                 });
             }
         },
 
-        getComics: ['getLast', function (result, next) {
-            var isTheSame = (result.getLast === last), url, id;
+        getComics: ['getNums', function (result, next) {
+            var id, url;
 
-            last = result.getLast;
+            if (result.getNums.nums.length) {
+                if (isRandom || result.getNums.isNew) {
+                    if (isRandom) {
+                        id = random(result.getNums.nums.length - 1);
+                    } else {
+                        id = result.getNums.nums[result.getNums.nums.length - 1];
+                    }
 
-            if (isRandom) {
-                url = config.get('comicsSites.xkcdru.url');
+                    url = config.get('comicsSites.xkcdru.url');
 
-                id = getNumber(last.link);
-
-                if (id) {
-                    console.log(url + '/random/' + id + '/');
-                    domObj(url + '/random/' + id + '/', function (err, dom) {
+                    domObj(url + '/' + id + '/', function (err, dom) {
                         if (err) {
                             callback(err);
                         } else {
-                            console.log(dom);
                             var rawArticle = getDomObjects(dom, ARTICLE_CLASS);
-
-                            console.log(rawArticle);
-
-
-                            // var _article = article(rawArticle);
-                            // callback(null, _article);
+                            next(null, article(rawArticle[0].childNodes));
                         }
-                    }, true);
+                    }, false);
+
                 } else {
                     next(null, null);
                 }
             } else {
-                if (isTheSame) {
-                    next(null, null);
-                } else {
-                    next(null, {
-                        title: last.title,
-                        contentSnippet: last.contentSnippet,
-                        img: last.img
-                    });
-                }
+                next(null, null);
             }
         }]
     }, function (err, result) {
-        console.log(err, result.getComics);
-        if (err) {
+        var message = null;
 
-        } else {
+        if (result) {
+            message = '';
 
+            try {
+                message = result.getComics.title;
+                message += '\n\n';
+            } catch(e) {}
+
+            try {
+                message += result.getComics.comicsText;
+                message += '\n\n';
+            } catch(e) {}
+
+            message += result.getComics.img;
         }
+
+        callback(err, message);        
     });
 };

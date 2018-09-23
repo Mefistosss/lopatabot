@@ -12,6 +12,7 @@ var db = require('./data/db.js');
 var morningJob = require('./jobs/morning.js');
 var bashcomicsJob = require('./jobs/bashcomics.js');
 var coubJob = require('./jobs/coub.js');
+var xkcdruJob = require('./jobs/xkcdru.js');
 var iWantMoreFilter = require('./lib/iWantMoreFilter.js');
 
 process.on('unhandledRejection', (reason, p) => {
@@ -104,9 +105,11 @@ bot.onText(/\/coub/, function (msg) {
 });
 
 bot.onText(/\/comicsru/, function (msg) {
-    comicsru(function (data) {
-        bot.sendMessage(msg.chat.id, data);
-    });
+    comicsru(function (err, message) {
+        if (message) {
+            bot.sendMessage(msg.chat.id, message);
+        }
+    }, true, false);
 });
 
 bot.onText(/\/version/, function (msg) {
@@ -129,6 +132,11 @@ var groups = new Groups(function (ids, typeOfMessage) {
         case 'coub':
             coubJob(bot, ids, function () {
                 console.log('Coub work is ended!');
+            });
+            break;
+        case 'xkcdru':
+            xkcdruJob(bot, ids, function () {
+                console.log('xkcdru work is ended!');
             });
             break;
     }
@@ -190,8 +198,8 @@ bot.on('callback_query', function (query) {
 
 db(function (err) {
     if (!err) {
-        console.log('JOB STARTED');
         groups.startJob();
+        console.log('JOB STARTED');
     }
 });
 
