@@ -14,7 +14,9 @@ var morningJob = require('./jobs/morning.js');
 var bashcomicsJob = require('./jobs/bashcomics.js');
 var coubJob = require('./jobs/coub.js');
 var xkcdruJob = require('./jobs/xkcdru.js');
+
 var iWantMoreFilter = require('./lib/iWantMoreFilter.js');
+var queryFilter = require('./lib/queryFilter.js');
 
 process.on('unhandledRejection', (reason, p) => {
     console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
@@ -94,35 +96,45 @@ bot.onText(/\/help\b/, function (msg) {
 });
 
 bot.onText(/\/anekdot/, function (msg) {
-    anekdot(function (data) {
-        bot.sendMessage(msg.chat.id, data);
-    });
+    if (queryFilter(msg.from.id)) {
+        anekdot(function (data) {
+            bot.sendMessage(msg.chat.id, data);
+        });
+    }
 });
 
 bot.onText(/\/coub/, function (msg) {
-    coub(function (data) {
-        bot.sendMessage(msg.chat.id, data);
-    });
+    if (queryFilter(msg.from.id)) {
+        coub(function (data) {
+            bot.sendMessage(msg.chat.id, data);
+        });
+    }
 });
 
 bot.onText(/\/comicsru/, function (msg) {
-    comicsru(function (err, message) {
-        if (message) {
-            bot.sendMessage(msg.chat.id, message);
-        }
-    }, true, false);
+    if (queryFilter(msg.from.id)) {
+        comicsru(function (err, message) {
+            if (message) {
+                bot.sendMessage(msg.chat.id, message);
+            }
+        }, true, false);
+    }
 });
 
 bot.onText(/\/comics/, function (msg) {
-    comics(function (err, message) {
-        if (message) {
-            bot.sendMessage(msg.chat.id, message);
-        }
-    });
+    if (queryFilter(msg.from.id)) {
+        comics(function (err, message) {
+            if (message) {
+                bot.sendMessage(msg.chat.id, message);
+            }
+        });
+    }
 });
 
 bot.onText(/\/version/, function (msg) {
-    bot.sendMessage(msg.chat.id, version);
+    if (queryFilter(msg.from.id)) {
+        bot.sendMessage(msg.chat.id, version);
+    }
 });
 
 var groups = new Groups(function (ids, typeOfMessage) {
@@ -152,19 +164,23 @@ var groups = new Groups(function (ids, typeOfMessage) {
 });
 
 bot.onText(/\/startnotices/, function (msg) {
-    groups.add(msg.chat, function (err, message) {
-        if (!err) {
-            bot.sendMessage(msg.chat.id, message);
-        }
-    });
+    if (queryFilter(msg.from.id)) {
+        groups.add(msg.chat, function (err, message) {
+            if (!err) {
+                bot.sendMessage(msg.chat.id, message);
+            }
+        });
+    }
 });
 
 bot.onText(/\/stopnotices/, function (msg) {
-    groups.remove(msg.chat.id, function (err, message) {
-        if (!err) {
-            bot.sendMessage(msg.chat.id, message);
-        }
-    });
+    if (queryFilter(msg.from.id)) {
+        groups.remove(msg.chat.id, function (err, message) {
+            if (!err) {
+                bot.sendMessage(msg.chat.id, message);
+            }
+        });
+    }
 });
 
 bot.on('callback_query', function (query) {
