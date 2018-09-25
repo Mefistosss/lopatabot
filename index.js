@@ -170,15 +170,15 @@ bot.onText(/\/stopnotices/, function (msg) {
 bot.on('callback_query', function (query) {
     if (query.data === 'i_want_more') {
         if (iWantMoreFilter.check(query.message.message_id, query.message.chat.type)) {
+            if (query.message.chat.type === 'group') {
+                bot.editMessageText(query.message.text, {
+                    chat_id: query.message.chat.id,
+                    message_id: query.message.message_id
+                });
+            }
+
             anekdot(function (data) {
                 var parse;
-
-                if (query.message.chat.type === 'group') {
-                    bot.editMessageText(query.message.text, {
-                        chat_id: query.message.chat.id,
-                        message_id: query.message.message_id
-                    });
-                }
 
                 parse = 'Oooo, ' + (query.from.first_name || query.from.username) + ' хочет еще.\n\n';
                 bot.sendMessage(query.message.chat.id, parse + data);
@@ -187,15 +187,15 @@ bot.on('callback_query', function (query) {
         }
     } else if (query.data === 'i_want_more_coub') {
         if (iWantMoreFilter.check(query.message.message_id, query.message.chat.type)) {
+            if (query.message.chat.type === 'group') {
+                bot.editMessageText(query.message.text, {
+                    chat_id: query.message.chat.id,
+                    message_id: query.message.message_id
+                });
+            }
+
             coub(function (data) {
                 var parse;
-
-                if (query.message.chat.type === 'group') {
-                    bot.editMessageText(query.message.text, {
-                        chat_id: query.message.chat.id,
-                        message_id: query.message.message_id
-                    });
-                }
 
                 parse = 'Oooo, ' + (query.from.first_name || query.from.username) + ' хочет еще.\n\n';
                 bot.sendMessage(query.message.chat.id, parse + data);
