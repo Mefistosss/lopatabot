@@ -31,7 +31,8 @@ function requireModels(callback) {
     require('./models/hashdata');
 
     async.each(Object.keys(mongoose.models), function(modelName, _callback) {
-        mongoose.models[modelName].ensureIndexes(_callback);
+        // mongoose.models[modelName].ensureIndexes(_callback);
+        mongoose.models[modelName].createIndexes(_callback);
     }, callback);
 }
 module.exports = function(callback) {

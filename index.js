@@ -4,6 +4,8 @@ var config = require('config');
 var getMessage = require('./lib/wrap.js');
 var anekdot = require('./anekdots');
 var coub = require('./coub');
+var comicsru = require('./comics/xkcd/ru');
+var comics = require('./comics/xkcd/com');
 var Groups = require('./groups');
 var version = require('./package.json').version;
 var db = require('./data/db.js');
@@ -11,7 +13,10 @@ var db = require('./data/db.js');
 var morningJob = require('./jobs/morning.js');
 var bashcomicsJob = require('./jobs/bashcomics.js');
 var coubJob = require('./jobs/coub.js');
+var xkcdruJob = require('./jobs/xkcdru.js');
+
 var iWantMoreFilter = require('./lib/iWantMoreFilter.js');
+var queryFilter = require('./lib/queryFilter.js');
 
 process.on('unhandledRejection', (reason, p) => {
     console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
@@ -91,19 +96,45 @@ bot.onText(/\/help\b/, function (msg) {
 });
 
 bot.onText(/\/anekdot/, function (msg) {
-    anekdot(function (data) {
-        bot.sendMessage(msg.chat.id, data);
-    });
+    if (queryFilter(msg.from.id)) {
+        anekdot(function (data) {
+            bot.sendMessage(msg.chat.id, data);
+        });
+    }
 });
 
 bot.onText(/\/coub/, function (msg) {
-    coub(function (data) {
-        bot.sendMessage(msg.chat.id, data);
-    });
+    if (queryFilter(msg.from.id)) {
+        coub(function (data) {
+            bot.sendMessage(msg.chat.id, data);
+        });
+    }
+});
+
+bot.onText(/\/comicsru/, function (msg) {
+    if (queryFilter(msg.from.id)) {
+        comicsru(function (err, message) {
+            if (message) {
+                bot.sendMessage(msg.chat.id, message);
+            }
+        }, true, false);
+    }
+});
+
+bot.onText(/\/comics/, function (msg) {
+    if (queryFilter(msg.from.id)) {
+        comics(function (err, message) {
+            if (message) {
+                bot.sendMessage(msg.chat.id, message);
+            }
+        });
+    }
 });
 
 bot.onText(/\/version/, function (msg) {
-    bot.sendMessage(msg.chat.id, version);
+    if (queryFilter(msg.from.id)) {
+        bot.sendMessage(msg.chat.id, version);
+    }
 });
 
 var groups = new Groups(function (ids, typeOfMessage) {
@@ -120,41 +151,50 @@ var groups = new Groups(function (ids, typeOfMessage) {
             });
             break;
         case 'coub':
-            coubJob(bot, ids, function () {
-                console.log('Coub work is ended!');
+            // coubJob(bot, ids, function () {
+            //     console.log('Coub work is ended!');
+            // });
+            break;
+        case 'xkcdru':
+            xkcdruJob(bot, ids, function () {
+                console.log('xkcdru work is ended!');
             });
             break;
     }
 });
 
 bot.onText(/\/startnotices/, function (msg) {
-    groups.add(msg.chat, function (err, message) {
-        if (!err) {
-            bot.sendMessage(msg.chat.id, message);
-        }
-    });
+    if (queryFilter(msg.from.id)) {
+        groups.add(msg.chat, function (err, message) {
+            if (!err) {
+                bot.sendMessage(msg.chat.id, message);
+            }
+        });
+    }
 });
 
 bot.onText(/\/stopnotices/, function (msg) {
-    groups.remove(msg.chat.id, function (err, message) {
-        if (!err) {
-            bot.sendMessage(msg.chat.id, message);
-        }
-    });
+    if (queryFilter(msg.from.id)) {
+        groups.remove(msg.chat.id, function (err, message) {
+            if (!err) {
+                bot.sendMessage(msg.chat.id, message);
+            }
+        });
+    }
 });
 
 bot.on('callback_query', function (query) {
     if (query.data === 'i_want_more') {
         if (iWantMoreFilter.check(query.message.message_id, query.message.chat.type)) {
+            if (query.message.chat.type === 'group') {
+                bot.editMessageText(query.message.text, {
+                    chat_id: query.message.chat.id,
+                    message_id: query.message.message_id
+                });
+            }
+
             anekdot(function (data) {
                 var parse;
-
-                if (query.message.chat.type === 'group') {
-                    bot.editMessageText(query.message.text, {
-                        chat_id: query.message.chat.id,
-                        message_id: query.message.message_id
-                    });
-                }
 
                 parse = 'Oooo, ' + (query.from.first_name || query.from.username) + ' хочет еще.\n\n';
                 bot.sendMessage(query.message.chat.id, parse + data);
@@ -163,15 +203,15 @@ bot.on('callback_query', function (query) {
         }
     } else if (query.data === 'i_want_more_coub') {
         if (iWantMoreFilter.check(query.message.message_id, query.message.chat.type)) {
+            if (query.message.chat.type === 'group') {
+                bot.editMessageText(query.message.text, {
+                    chat_id: query.message.chat.id,
+                    message_id: query.message.message_id
+                });
+            }
+
             coub(function (data) {
                 var parse;
-
-                if (query.message.chat.type === 'group') {
-                    bot.editMessageText(query.message.text, {
-                        chat_id: query.message.chat.id,
-                        message_id: query.message.message_id
-                    });
-                }
 
                 parse = 'Oooo, ' + (query.from.first_name || query.from.username) + ' хочет еще.\n\n';
                 bot.sendMessage(query.message.chat.id, parse + data);
@@ -183,8 +223,8 @@ bot.on('callback_query', function (query) {
 
 db(function (err) {
     if (!err) {
-        console.log('JOB STARTED');
         groups.startJob();
+        console.log('JOB STARTED');
     }
 });
 
