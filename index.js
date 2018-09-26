@@ -121,7 +121,7 @@ bot.onText(/\/comicsru/, function (msg) {
     }
 });
 
-bot.onText(/\/comics/, function (msg) {
+bot.onText(/\/comics$/, function (msg) {
     if (queryFilter.check(msg.from.id, 'comics', msg.chat.type)) {
         comics(function (err, message) {
             if (message) {
