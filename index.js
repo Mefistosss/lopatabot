@@ -96,7 +96,7 @@ bot.onText(/\/help\b/, function (msg) {
 });
 
 bot.onText(/\/anekdot/, function (msg) {
-    if (queryFilter(msg.from.id)) {
+    if (queryFilter.check(msg.from.id, 'anekdot', msg.chat.type)) {
         anekdot(function (data) {
             bot.sendMessage(msg.chat.id, data);
         });
@@ -104,7 +104,7 @@ bot.onText(/\/anekdot/, function (msg) {
 });
 
 bot.onText(/\/coub/, function (msg) {
-    if (queryFilter(msg.from.id)) {
+    if (queryFilter.check(msg.from.id, 'coub', msg.chat.type)) {
         coub(function (data) {
             bot.sendMessage(msg.chat.id, data);
         });
@@ -112,7 +112,7 @@ bot.onText(/\/coub/, function (msg) {
 });
 
 bot.onText(/\/comicsru/, function (msg) {
-    if (queryFilter(msg.from.id)) {
+    if (queryFilter.check(msg.from.id, 'comicsru', msg.chat.type)) {
         comicsru(function (err, message) {
             if (message) {
                 bot.sendMessage(msg.chat.id, message);
@@ -122,7 +122,7 @@ bot.onText(/\/comicsru/, function (msg) {
 });
 
 bot.onText(/\/comics/, function (msg) {
-    if (queryFilter(msg.from.id)) {
+    if (queryFilter.check(msg.from.id, 'comics', msg.chat.type)) {
         comics(function (err, message) {
             if (message) {
                 bot.sendMessage(msg.chat.id, message);
@@ -132,7 +132,7 @@ bot.onText(/\/comics/, function (msg) {
 });
 
 bot.onText(/\/version/, function (msg) {
-    if (queryFilter(msg.from.id)) {
+    if (queryFilter.check(msg.from.id, 'version', msg.chat.type)) {
         bot.sendMessage(msg.chat.id, version);
     }
 });
@@ -141,6 +141,7 @@ var groups = new Groups(function (ids, typeOfMessage) {
     switch (typeOfMessage) {
         case 'morning':
             iWantMoreFilter.clear();
+            queryFilter.clear();
             morningJob(bot, ids, function () {
                 console.log('Morning work is ended!');
             });
@@ -164,7 +165,7 @@ var groups = new Groups(function (ids, typeOfMessage) {
 });
 
 bot.onText(/\/startnotices/, function (msg) {
-    if (queryFilter(msg.from.id)) {
+    if (queryFilter.check(msg.from.id, 'startnotices', msg.chat.type)) {
         groups.add(msg.chat, function (err, message) {
             if (!err) {
                 bot.sendMessage(msg.chat.id, message);
@@ -174,7 +175,7 @@ bot.onText(/\/startnotices/, function (msg) {
 });
 
 bot.onText(/\/stopnotices/, function (msg) {
-    if (queryFilter(msg.from.id)) {
+    if (queryFilter.check(msg.from.id, 'stopnotices', msg.chat.type)) {
         groups.remove(msg.chat.id, function (err, message) {
             if (!err) {
                 bot.sendMessage(msg.chat.id, message);
