@@ -34,8 +34,7 @@ module.exports = function(bot, ids, callback) {
         group: ['canSend', function (results, next) {
             if (results.canSend) {
                 send(ids.group, function (id) {
-                    results.comics = phrase + '\n\n' + results.comics;
-                    bot.sendMessage(id, results.comics);
+                    bot.sendMessage(id, phrase + '\n\n' + results.comics);
                 }, next);
             } else {
                 next();
@@ -44,8 +43,7 @@ module.exports = function(bot, ids, callback) {
         private: ['group', function (results, next) {
             if (results.canSend) {
                 send(ids.private, function (id) {
-                    results.comics = phrase + '\n\n' + results.comics;
-                    bot.sendMessage(id, results.comics);
+                    bot.sendMessage(id, phrase + '\n\n' + results.comics);
                 }, next);
             } else {
                 next();
