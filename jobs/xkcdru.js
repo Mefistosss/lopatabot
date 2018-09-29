@@ -1,6 +1,7 @@
 var async = require('async');
 var config = require('config');
 var comics = require('../comics/xkcd/ru');
+var HashData = require('../data/models/hashdata').HashData;
 var delivery = require('../lib/delivery.js');
 
 var phrase = config.get('phrases.newComics');
@@ -12,7 +13,51 @@ function getComics(next) {
 }
 
 function checkComics(results, next) {
-    next(null, !!results.comics);
+    var hd, time;
+    if (results.comics) {
+        HashData.find({ dataType: 'xkcdru' }, function (err, datas) {
+            if (err) {
+                next(err);
+            } else {
+                time = new Date();
+
+                if (datas.length) {
+                    hd = datas[0];
+
+                    if (hd.hashData === results.comics) {
+                        next(null, false);
+                    } else {
+                        hd.hashData = results.comics;
+                        hd.timeDate = time;
+
+                        hd.save(function (_err) {
+                            if (_err) {
+                                next(_err, false);
+                            } else {
+                                next(null, true);
+                            }
+                        });
+                    }
+                } else {
+                    hd = new HashData({
+                        dataType: 'xkcdru',
+                        hashData: results.comics,
+                        timeDate: time
+                    });
+
+                    hd.save(function (_err) {
+                        if (_err) {
+                            next(_err, false);
+                        } else {
+                            next(null, true);
+                        }
+                    });
+                }
+            }
+        });
+    } else {
+        next(null, false);
+    }
 }
 
 function send (ids, callback, next) {
@@ -34,8 +79,7 @@ module.exports = function(bot, ids, callback) {
         group: ['canSend', function (results, next) {
             if (results.canSend) {
                 send(ids.group, function (id) {
-                    results.comics = phrase + '\n\n' + results.comics;
-                    bot.sendMessage(id, results.comics);
+                    bot.sendMessage(id, phrase + '\n\n' + results.comics);
                 }, next);
             } else {
                 next();
@@ -44,8 +88,7 @@ module.exports = function(bot, ids, callback) {
         private: ['group', function (results, next) {
             if (results.canSend) {
                 send(ids.private, function (id) {
-                    results.comics = phrase + '\n\n' + results.comics;
-                    bot.sendMessage(id, results.comics);
+                    bot.sendMessage(id, phrase + '\n\n' + results.comics);
                 }, next);
             } else {
                 next();

@@ -86,7 +86,7 @@ module.exports = function(callback, isRandom, newNums) {
     }, function (err, result) {
         var message = null;
 
-        if (result) {
+        if (result && result.getComics) {
             message = '';
 
             if (result.getComics.title) {
